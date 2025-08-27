@@ -8,18 +8,20 @@ import javassist.CtMethod;
 import javassist.LoaderClassPath;
 
 class BufferedReaderTransformer implements ClassFileTransformer {
+
     @Override
-    public byte[] transform(
-            ClassLoader loader,
-            String className,
-            Class<?> classBeingRedefined,
-            ProtectionDomain domain,
-            byte[] classfileBuffer) {
+    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain domain,
+            byte[] classfileBuffer)
+    {
+
         if (!"java/io/BufferedReader".equals(className)) {
+
             return null;
+
         }
 
         try {
+
             ClassPool cp = ClassPool.getDefault();
             cp.insertClassPath(new LoaderClassPath(loader));
 
@@ -27,14 +29,19 @@ class BufferedReaderTransformer implements ClassFileTransformer {
             CtMethod readLineMethod = ctClass.getDeclaredMethod("readLine");
             readLineMethod.insertAfter("{ $_ = nl.skbotnl.substagent.Hook.substituteEnvVariables($_); }");
 
-            CtClass[] paramTypes = {cp.get("char[]"), CtClass.intType, CtClass.intType};
+            CtClass[] paramTypes = { cp.get("char[]"), CtClass.intType, CtClass.intType };
             CtMethod readMethod = ctClass.getDeclaredMethod("read", paramTypes);
             readMethod.insertAfter("{ cbuf = nl.skbotnl.substagent.Hook.substituteEnvVariables(cbuf); }");
             byte[] byteCode = ctClass.toBytecode();
             ctClass.detach();
             return byteCode;
+
         } catch (Throwable e) {
+
             throw new RuntimeException(e);
+
         }
+
     }
+
 }
