@@ -65,6 +65,10 @@ spotless {
         removeUnusedImports() // Remove imports that aren't being called.
     }
     kotlinGradle {
+        ktfmt().kotlinlangStyle().configure { it.setMaxWidth(120) }
+        target("build.gradle.kts", "settings.gradle.kts")
+    }
+    kotlinGradle {
         ktfmt().kotlinlangStyle().configure { it.setMaxWidth(120) } // JetBrains Kotlin formatting.
         target("build.gradle.kts", "settings.gradle.kts") // Gradle files to format.
     }
