@@ -8,11 +8,8 @@ public class SubstAgent {
 
         String version = SubstAgent.class.getPackage().getImplementationVersion();
         System.out.println("[SubstAgent] Loaded version " + version);
-<<<<<<< HEAD
-
-=======
         inst.addTransformer(new Transformer());
->>>>>>> de6ecef (Add support for server.properties)
+
     }
 
 }
