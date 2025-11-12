@@ -8,7 +8,7 @@ public class SubstAgent {
 
         String version = SubstAgent.class.getPackage().getImplementationVersion();
         System.out.println("[SubstAgent] Loaded version " + version);
-        inst.addTransformer(new BufferedReaderTransformer());
+        inst.addTransformer(new Transformer());
 
     }
 
