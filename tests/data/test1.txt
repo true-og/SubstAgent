@@ -1,0 +1,1 @@
+Hello $SAME_LENGTH_ENV
