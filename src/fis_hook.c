@@ -139,8 +139,8 @@ jint JNICALL fis_read0_hook(JNIEnv *env, jobject thiz) {
   }
 
   struct fis_file_data *fd = &file->value;
-  char read_byte = fd->data[fd->index++];
-  if (fd->data[fd->index] == '\0') {
+  jint read_byte = (unsigned char)fd->data[fd->index++];
+  if (fd->index >= fd->length) {
     free(fd->data);
     fd->data = NULL;
   }
@@ -168,7 +168,7 @@ jlong JNICALL fis_length0_hook(JNIEnv *env, jobject thiz) {
 
 jlong JNICALL fis_position0_hook(JNIEnv *env, jobject thiz) {
   if (!has_tag(thiz)) {
-    return fis_real_length0(env, thiz);
+    return fis_real_position0(env, thiz);
   }
 
   jclass class = (*env)->GetObjectClass(env, thiz);
@@ -209,7 +209,6 @@ jlong JNICALL fis_skip0_hook(JNIEnv *env, jobject thiz, jlong n) {
   if (skip == remaining) {
     free(fd->data);
     fd->data = NULL;
-    return skip;
   }
 
   return skip;

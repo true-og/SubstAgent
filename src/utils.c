@@ -47,7 +47,6 @@ char *substitute(const char *value, int prefix_char_matched_index, size_t i,
 void parse_file(char **data_ptr, size_t fsize, const char *filename) {
   char *data = *data_ptr;
   int line_count = 1;
-  ;
   int begin_env_index = -1;
   char env_var[4096];
   env_var[0] = '\0';
@@ -59,6 +58,16 @@ void parse_file(char **data_ptr, size_t fsize, const char *filename) {
       if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) ||
           (c >= 97 && c <= 122) || c == 95) {
         size_t len = strlen(env_var);
+        if (len + 1 >= 4096) {
+          fprintf(stderr,
+                  "\033[0G\e[0;31m[SubstAgent] Failed to expand environment "
+                  "variable \"%s\" in file %s on line %d because it is too "
+                  "big\e[0m\n",
+                  env_var, filename, line_count);
+          begin_env_index = -1;
+          env_var[0] = '\0';
+          continue;
+        }
         env_var[len] = c;
         env_var[len + 1] = '\0';
       } else if (c == '}') {
@@ -113,7 +122,7 @@ void parse_file(char **data_ptr, size_t fsize, const char *filename) {
       }
     } else {
       if (c == '^') {
-        if (data[i + 1] == '{') {
+        if (i + 1 < fsize && data[i + 1] == '{') {
           begin_env_index = i;
           i++;
         }
