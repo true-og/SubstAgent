@@ -1,1 +1,2 @@
 tests/*.java linguist-detectable=false
+.gitea/CODEOWNERS linguist-detectable=false
